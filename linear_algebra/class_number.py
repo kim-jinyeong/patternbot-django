@@ -5,13 +5,11 @@ rc('font', family=font_manager.FontProperties(fname='C:/Windows/Fonts/malgunsl.t
 
 class classnumber:
     def __init__(self):
-        self.digits = load_digits() # 데이터 로드
-        self.samples = [0, 10, 20, 30, 1, 11, 21, 31] # 선택된 이미지 번호
-        self.d = [self.digits.images[self.samples[i]] for i in range(8)]
+        digits = load_digits() # 데이터 로드
+        samples = [0, 10, 20, 30, 1, 11, 21, 31] # 선택된 이미지 번호
+        self.d = [digits.images[samples[i]] for i in range(8)]
         self.v = [self.d[i].reshape(64, 1) for i in range(8)]# 벡터화
 
-    def image(self):
-        pass
 
     def imagenumber(self):
         plt.figure(figsize=(8, 2))
