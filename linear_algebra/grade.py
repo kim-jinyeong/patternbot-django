@@ -1,28 +1,43 @@
+# 온도에 따른 오존량 예측
+
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-class solution:
+
+import pandas as pd
+
+class Solution(object):
     def __init__(self):
-        # 1. Training Data Set
-        # 공부시간에 따른 점수 데이터
-        self.x_data = np.array([1, 2, 3, 4, 5, 7, 8, 10, 12, 13, 14, 15, 18, 20, 25, 28, 30]).reshape(-1, 1)
-        self.t_data = np.array([5, 7, 20, 31, 40, 44, 46, 49, 60, 62, 70, 80, 85, 91, 92, 97, 98]).reshape(-1, 1)
+        url = "https://raw.githubusercontent.com/reisanar/datasets/master/ozone.data.csv"
+        df = pd.read_csv(url)
+        # 2. Data Preprocessing(데이터 전처리)
+        # 필요한 column(Temp, Ozone)만 추출
+        training_data = df[['temp', 'ozone']]
 
-        # 2. Linear Regression Model 정의
-        self.W = np.random.rand(1, 1)  # matrix
-        self.b = np.random.rand(1)  # scalar
+        # 결측치 제거 - dropna() 함수 이용
+        training_data = training_data.dropna(how='any')
 
-        # 6. learning rate 정의
-        self.learning_rate = 0.0001
+        # 3. Training Data Set
+        self.x_data = training_data['temp'].values.reshape(-1, 1)
+        self.t_data = training_data['ozone'].values.reshape(-1, 1)
 
-        # 미분을 진행할 loss_func에 대한 lambda 함수를 정의
-        self.f = lambda x: self.loss_func(x_data, t_data)
+        # 4. Simple Linear Regression 정의
+        self.W = np.random.rand(1, 1)
+        self.b = np.random.rand(1)
 
+        # 7. 프로그램에서 필요한 변수들 정의
+        self.learning_rate = 1e-5
+        self.f = lambda x: self.loss_func(self.x_data, self.t_data)
 
-    # 3. Loss function
+    # 5. loss function 정의, Linear Regression Model
     def loss_func(self, x, t):
         y = np.dot(x, self.W) + self.b
-        return np.mean(np.power((t - y), 2))  # 최소 제곱법
+        return np.mean(np.power((t - y), 2))  # 최소제곱법
 
+
+    # 6. 학습종료 후 예측값 계산 함수
+    def predict(self, x):
+        return np.dot(x, self.W) + self.b
 
     # 4. 미분함수
     def numerical_derivative(self, f, x):
@@ -58,41 +73,29 @@ class solution:
         return derivative_x
 
 
-    # 5. prediction
-    # 학습종료 후 임의의 데이터에 대한 예측값을 알아오는 함수
-    def predict(self, x):
-        return np.dot(x, self.W) + self.b  # Hypothesis, Linear Regression Model
-
-
     def solution(self):
-        # 7. 학습 진행
-        # 반복해서 W와 b를 업데이트하며 학습 진행
+        x_data = self.x_data
+        t_data = self.t_data
+        f = self.f
+        learning_rate = self.learning_rate
+        numerical_derivative = self.numerical_derivative
+
+        # 8. 학습 진행
         for step in range(90000):
-            W = self.W - self.learning_rate * self.numerical_derivative(self.f, self.W)  # W의 편미분
-            b = self.b - self.learning_rate * self.numerical_derivative(self.f, self.b)  # b의 편미분
+            self.W -= learning_rate * numerical_derivative(f, self.W)
+            self.b -= learning_rate * numerical_derivative(f, self.b)
 
             if step % 9000 == 0:
-                print('W : {}, b : {}, loss : {}'.format(W, b, loss_func(x_data, t_data)))
+                print('W : {}, b : {}, loss : {}'.format(self.W, self.b, self.loss_func(x_data, t_data)))
 
-        # 8. 학습종료 후 예측
-        print(predict(19))  # [[77.86823633]]
+        # 9. 예측
+        result = self.predict(62)
+        print(result)  # [[34.56270003]]
 
-        # 데이터의 분포를 scatter로 확인
-        plt.scatter(x_data.ravel(), t_data.ravel())
-        plt.plot(x_data.ravel(), np.dot(x_data, W) + b)  # 직선
+        # 10. 그래프로 확인
+        plt.scatter(x_data, t_data)
+        plt.plot(x_data, np.dot(x_data, self.W) + self.b, color='r')
         plt.show()
 
-
-    ### 결과 ###
-    # W : [[0.70258102]], b : [0.34989893], loss : 2901.873645506518
-    # W : [[3.69624857]], b : [7.76428816], loss : 115.3569040150161
-    # W : [[3.48105486]], b : [11.79738967], loss : 96.72058839761921
-    # W : [[3.36122244]], b : [14.04325595], loss : 90.94163038784045
-    # W : [[3.29449276]], b : [15.29388535], loss : 89.14962619750266
-    # W : [[3.25733378]], b : [15.99030879], loss : 88.59394141613679
-    # W : [[3.23664149]], b : [16.37811799], loss : 88.42162843946696
-    # W : [[3.22511881]], b : [16.59407279], loss : 88.36819569679594
-    # W : [[3.21870231]], b : [16.71432903], loss : 88.35162667196388
-    # W : [[3.21512923]], b : [16.78129472], loss : 88.34648876269387
-
 if __name__ == '__main__':
+    Solution().solution()
