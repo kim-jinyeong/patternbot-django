@@ -115,6 +115,7 @@ class ReaderBase(metaclass=ABCMeta):
 
 #Reader, Printer
 class Reader(ReaderBase):
+
     def new_file(self, file) -> str:
         return file.context + file.fname
 

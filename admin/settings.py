@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,11 +73,14 @@ WSGI_APPLICATION = 'admin.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'name': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql', # mysqlclient librarly 설치
+        'NAME': 'patternbotdb',
+        'USER': 'root',
+        'PASSWORD': 'root', # mariadj 설치 시 입력한 root 비밀번호 입력
+        'HOST': 'localhost',
+        'PORT': '3307'
     }
 }
 
