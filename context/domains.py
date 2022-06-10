@@ -91,10 +91,6 @@ class File(object):
     def dframe(self, dframe): self._dframe = dframe
 
 
-class PrinterBase(metaclass=ABCMeta):
-    @abstractmethod
-    def dframe(self):
-        pass
 #new_file, csv, xls, json
 class ReaderBase(metaclass=ABCMeta):
     @abstractmethod
@@ -115,23 +111,25 @@ class ReaderBase(metaclass=ABCMeta):
 
 #Reader, Printer
 class Reader(ReaderBase):
-
-    def new_file(self, file) -> str:
+    @staticmethod
+    def new_file(file) -> str:
         return file.context + file.fname
 
     def csv(self, file) -> object:
         return pd.read_csv(f'{self.new_file(file)}.csv', encoding='UTF-8', thousands=',')
 
-    def xls(self, file, header, cols) -> object:
-        return pd.read_excel(f'{self.new_file(file)}.xls', header=header, usecols=cols)
+    def xls(self, file, header, cols, skiprows) -> object:
+        return pd.read_excel(f'{self.new_file(file)}.xls', header=header, usecols=cols, skiprows=[skiprows])
 
     def json(self, file) -> object:
         return pd.read_json(f'{self.new_file(file)}.json', encoding='UTF-8')
 
-    def gmaps(self) -> object:
-        return googlemaps.Client(key='')
+    @staticmethod
+    def gmaps() -> googlemaps.client.Client:
+        return googlemaps.Client(key='secret')
 
-    def printer(self, this):
+    @staticmethod
+    def printer(this):
         print('*' * 100)
         print(f'1. Target type \n {type(this)} ')
         print(f'2. Target column \n {this.columns} ')
