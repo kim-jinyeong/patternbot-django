@@ -1,5 +1,6 @@
 # context, fname, train, test, id, label
 # class Dataset
+import json
 from abc import *
 from dataclasses import dataclass
 import pandas as pd
@@ -128,6 +129,8 @@ class Reader(ReaderBase):
     def json(self, path: str)-> PandasDataFrame:
         return pd.read_json(f'{self.new_file(path)}.json', encoding='UTF-8')
 
+    def map_json(self, path: str) -> object:
+        return json.load(open(f'{self.new_file(path)}.json', encoding='UTF-8'))
     @staticmethod
     def gmaps() -> googlemaps.client.Client:
         return googlemaps.Client(key='')
