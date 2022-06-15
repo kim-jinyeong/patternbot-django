@@ -118,6 +118,10 @@ class Reader(ReaderBase):
     def new_file(file) -> str:
         return file.context + file.fname
 
+    def re_csv(self, path: str, names, index_col) -> PandasDataFrame:
+        o = pd.read_csv(f'{self.new_file(path)}.csv', encoding='UTF-8', thousands=',', names=names, index_col=index_col)
+        return o
+
     def csv(self, path: str)-> PandasDataFrame:
         o = pd.read_csv(f'{self.new_file(path)}.csv', encoding='UTF-8', thousands=',')
         print(f'type: {type(o)}')

@@ -25,18 +25,17 @@ class Solution(Reader):
             menu = print_menu()
             if menu == '0':
                 break
-            if menu == '1':
+            elif menu == '1':
                 self.save_police_pos()
-            if menu == '2':
+            elif menu == '2':
                 self.folium_test()
-            if menu == '3':
+            elif menu == '3':
                 self.save_cctv_pos()
-            if menu == '4':
+            elif menu == '4':
                 self.save_police_norm()
-            if menu == '5':
+            elif menu == '5':
                 self.draw_crime_map()
-            elif menu == '0':
-                break
+
 
     def save_police_pos(self):
         file = self.file
